@@ -157,7 +157,7 @@ public class StoryRoute extends RouteBuilder {
 			LOGGER.error("Hystrix Default fallback. Empty list of stories returned", cause);
 			exchange.getIn().setBody(new ArrayList<Story>());
 	    }) .marshal().json(JsonLibrary.Jackson);
-	    
+
 		// Default fallback returns empty story
 	    from("direct:defaultStoryFallback").routeId("defaultStoryFallback")
 	    .process(new Processor() {

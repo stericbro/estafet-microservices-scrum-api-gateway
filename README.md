@@ -4,7 +4,7 @@
 This microservice is serving as a API Gateway in Estafet Scrum Demo Application.
 The API Gateway is used as a single entry point for all microservices.
 The API Gateway handles requests and then they are proxied/routed to the appropriate service.
-It's important not to confuse a microservice API gateway with API management. 
+It's important not to confuse a microservice API gateway with API management.
 What a microservices API Gateway provides is a front end used to access the microservices underneath—there is no support for publishing, promoting, or administering services at any significant level.
 
 In our implementation we use Camel routes to create a proxy between UI and the services.

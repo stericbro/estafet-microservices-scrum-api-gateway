@@ -29,7 +29,7 @@ import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServl
 @ComponentScan
 @EnableAutoConfiguration
 @CamelOpenTracing
-@EnableCircuitBreaker 
+@EnableCircuitBreaker
 @EnableDiscoveryClient
 public class ApiGatewayApplication extends SpringBootServletInitializer {
 

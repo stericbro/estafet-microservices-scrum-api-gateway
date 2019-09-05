@@ -144,7 +144,7 @@ public class ProjectRoute extends RouteBuilder {
 			LOGGER.error("Hystrix Default fallback. Empty list of project returned", cause);
 			exchange.getIn().setBody(new ArrayList<Project>());
 		}).marshal().json(JsonLibrary.Jackson);
-	    
+
 		 // Default fallback returns empty project
 	    from("direct:defaultProjectFallback").routeId("defaultProjectFallback")
 	    .process((exchange)->{

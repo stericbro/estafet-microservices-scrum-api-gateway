@@ -120,7 +120,7 @@ public class SprintRoute extends RouteBuilder {
 			LOGGER.error("Hystrix Default fallback. Empty list of sprint returned", cause);
     		exchange.getIn().setBody(new ArrayList<Sprint>());
 	    }) .marshal().json(JsonLibrary.Jackson);
-	    
+
 		 // Default fallback returns empty project
 	    from("direct:defaultSprintFallback").routeId("defaultSprintFallback")
 	    .process((exchange) -> {
