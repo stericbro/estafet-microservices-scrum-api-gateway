@@ -11,10 +11,10 @@ In our implementation we use Camel routes to create a proxy between UI and the s
 And our Gateway do care about fault tolerance, that's why we implemented Hystrix circuit breaker inside our gateway.
 Also because our service do care if our service pods inside OpenShift are alive, that's why we use DiscoveryClient and we check our pods health regularly
 
-Each microservice has it's own git repository, but there is a master git repository that contains links to all of the repositories [here](https://github.com/Estafet-LTD/estafet-microservices-scrum).
+Each microservice has it's own git repository, but there is a master git repository that contains links to all of the repositories [here](https://github.com/stericbro/estafet-microservices-scrum).
 
 ## Getting Started
-You can find a detailed explanation of how to install this (and other microservices) [here](https://github.com/Estafet-LTD/estafet-microservices-scrum#getting-started).
+You can find a detailed explanation of how to install this (and other microservices) [here](https://github.com/stericbro/estafet-microservices-scrum#getting-started).
 
 ## Supported Camel Routes
 #NOTE: Currently Camel Routes aren't implemented for all microservices
@@ -70,7 +70,7 @@ POST http://localhost/story-api/project/{id}/story
 
 ## Gateway Block Schema
 
-![alt tag](https://github.com/Estafet-LTD/estafet-microservices-scrum/blob/master/GatewayBlockSchema.jpg)
+![alt tag](https://github.com/stericbro/estafet-microservices-scrum/blob/master/GatewayBlockSchema.jpg)
 
 ## Environment Variables
 ```
