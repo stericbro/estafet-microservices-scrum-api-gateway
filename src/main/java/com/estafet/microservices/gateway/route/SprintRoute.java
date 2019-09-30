@@ -21,113 +21,113 @@ import com.estafet.microservices.gateway.service.DiscoveryStewardService;
 
 @Component
 public class SprintRoute extends RouteBuilder {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SprintRoute.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SprintRoute.class);
 
-	@Value("${camel.hystrix.execution-timeout-in-milliseconds}")
-	private int hystrixExecutionTimeout;
+    @Value("${camel.hystrix.execution-timeout-in-milliseconds}")
+    private int hystrixExecutionTimeout;
 
-	@Value("${camel.hystrix.group-key}")
-	private String hystrixGroupKey;
+    @Value("${camel.hystrix.group-key}")
+    private String hystrixGroupKey;
 
-	@Value("${camel.hystrix.execution-timeout-enabled}")
-	private boolean hystrixCircuitBreakerEnabled;
+    @Value("${camel.hystrix.execution-timeout-enabled}")
+    private boolean hystrixCircuitBreakerEnabled;
 
-	@Autowired
-	private DiscoveryStewardService discoveryStewardService;
+    @Autowired
+    private DiscoveryStewardService discoveryStewardService;
 
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
-	@Override
-	public void configure() throws Exception {
-		LOGGER.info("- Initialize and configure /sprint route");
+    @Override
+    public void configure() throws Exception {
+        LOGGER.info("- Initialize and configure /sprint route");
 
-		try {
-			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));
-		} catch (Exception e) {
-			LOGGER.error("Failed to parse the ENABLE_TRACER value: {}", env.getProperty("ENABLE_TRACER"));
-		}
+        try {
+            getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse the ENABLE_TRACER value: {}", env.getProperty("ENABLE_TRACER"));
+        }
 
-		restConfiguration().component("servlet")
-		.apiContextPath("/api-docs")
-		.bindingMode(RestBindingMode.auto);
+        restConfiguration().component("servlet")
+        .apiContextPath("/api-docs")
+        .bindingMode(RestBindingMode.auto);
 
-		rest("/sprint-api")
-			.produces(MediaType.ALL_VALUE)
+        rest("/sprint-api")
+            .produces(MediaType.ALL_VALUE)
 
-		//Get sprint by sprint id
-		.get("/sprint/{id}")
-			.param()
-				.name("id")
-				.type(RestParamType.path)
-			.endParam()
-			.route()
-			.id("getSprintRoute")
-		.hystrix()
-			.id("Get Sprint By Id")
-			.hystrixConfiguration()
-			.executionTimeoutInMilliseconds(hystrixExecutionTimeout)
-			.groupKey(hystrixGroupKey)
-			.circuitBreakerEnabled(hystrixCircuitBreakerEnabled)
-			.requestLogEnabled(true)
-		.end()
-		.removeHeaders("CamelHttp*")
-		.setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
-		.setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-		.setHeader(Exchange.HTTP_URI, simple(discoveryStewardService.getServiceUrl("sprint-api") + "/sprint/${header.id}"))
-		.to("http4://DUMMY")
-		.onFallback()
-			.setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-			.to("direct:defaultSprintFallback")
-		.end()
-			.setHeader("CamelJacksonUnmarshalType", simple(Sprint.class.getName())).unmarshal()
-			.json(JsonLibrary.Jackson, Sprint.class)
-		.endRest()
+        //Get sprint by sprint id
+        .get("/sprint/{id}")
+            .param()
+                .name("id")
+                .type(RestParamType.path)
+            .endParam()
+            .route()
+            .id("getSprintRoute")
+        .hystrix()
+            .id("Get Sprint By Id")
+            .hystrixConfiguration()
+            .executionTimeoutInMilliseconds(hystrixExecutionTimeout)
+            .groupKey(hystrixGroupKey)
+            .circuitBreakerEnabled(hystrixCircuitBreakerEnabled)
+            .requestLogEnabled(true)
+        .end()
+        .removeHeaders("CamelHttp*")
+        .setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
+        .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+        .setHeader(Exchange.HTTP_URI, simple(discoveryStewardService.getServiceUrl("sprint-api") + "/sprint/${header.id}"))
+        .to("http4://DUMMY")
+        .onFallback()
+            .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+            .to("direct:defaultSprintFallback")
+        .end()
+            .setHeader("CamelJacksonUnmarshalType", simple(Sprint.class.getName())).unmarshal()
+            .json(JsonLibrary.Jackson, Sprint.class)
+        .endRest()
 
-		//Get all project sprints by project id
-		.get("/project/{id}/sprints")
-			.param()
-				.name("id")
-				.type(RestParamType.path)
-			.endParam()
-			.route()
-			.id("getProjectSprintsById")
-		.hystrix()
-			.id("Get Project Sprints By Project Id")
-			.hystrixConfiguration()
-			.executionTimeoutInMilliseconds(hystrixExecutionTimeout)
-			.groupKey(hystrixGroupKey)
-			.circuitBreakerEnabled(hystrixCircuitBreakerEnabled)
-			.requestLogEnabled(true)
-		.end()
-		.removeHeaders("CamelHttp*")
-		.setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
-		.setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-		.setHeader(Exchange.HTTP_URI, simple(discoveryStewardService.getServiceUrl("sprint-api") + "/project/${header.id}/sprints"))
-		.to("http4://DUMMY")
-		.onFallback()
-			.setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-			.to("direct:defaultListOfSprintsFallback")
-		.end()
-			.setHeader("CamelJacksonUnmarshalType", simple(Sprint[].class.getName())).unmarshal()
-			.json(JsonLibrary.Jackson, Sprint[].class)
-		.endRest();
+        //Get all project sprints by project id
+        .get("/project/{id}/sprints")
+            .param()
+                .name("id")
+                .type(RestParamType.path)
+            .endParam()
+            .route()
+            .id("getProjectSprintsById")
+        .hystrix()
+            .id("Get Project Sprints By Project Id")
+            .hystrixConfiguration()
+            .executionTimeoutInMilliseconds(hystrixExecutionTimeout)
+            .groupKey(hystrixGroupKey)
+            .circuitBreakerEnabled(hystrixCircuitBreakerEnabled)
+            .requestLogEnabled(true)
+        .end()
+        .removeHeaders("CamelHttp*")
+        .setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
+        .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+        .setHeader(Exchange.HTTP_URI, simple(discoveryStewardService.getServiceUrl("sprint-api") + "/project/${header.id}/sprints"))
+        .to("http4://DUMMY")
+        .onFallback()
+            .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+            .to("direct:defaultListOfSprintsFallback")
+        .end()
+            .setHeader("CamelJacksonUnmarshalType", simple(Sprint[].class.getName())).unmarshal()
+            .json(JsonLibrary.Jackson, Sprint[].class)
+        .endRest();
 
-		 // Default fallback returns empty list of projects
-	    from("direct:defaultListOfSprintsFallback").routeId("defaultListOfSprintsFallback")
-	    .process((exchange) -> {
-    		Exception cause = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-			LOGGER.error("Hystrix Default fallback. Empty list of sprint returned", cause);
-    		exchange.getIn().setBody(new ArrayList<Sprint>());
-	    }) .marshal().json(JsonLibrary.Jackson);
+         // Default fallback returns empty list of projects
+        from("direct:defaultListOfSprintsFallback").routeId("defaultListOfSprintsFallback")
+        .process((exchange) -> {
+            Exception cause = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+            LOGGER.error("Hystrix Default fallback. Empty list of sprint returned", cause);
+            exchange.getIn().setBody(new ArrayList<Sprint>());
+        }) .marshal().json(JsonLibrary.Jackson);
 
-		 // Default fallback returns empty project
-	    from("direct:defaultSprintFallback").routeId("defaultSprintFallback")
-	    .process((exchange) -> {
-			Exception cause = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-			LOGGER.error("Hystrix Default fallback. Empty sprints returned", cause);
-			exchange.getIn().setBody(new Sprint());
-	    }) .marshal().json(JsonLibrary.Jackson);
+         // Default fallback returns empty project
+        from("direct:defaultSprintFallback").routeId("defaultSprintFallback")
+        .process((exchange) -> {
+            Exception cause = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+            LOGGER.error("Hystrix Default fallback. Empty sprints returned", cause);
+            exchange.getIn().setBody(new Sprint());
+        }) .marshal().json(JsonLibrary.Jackson);
 
-	}
+    }
 }

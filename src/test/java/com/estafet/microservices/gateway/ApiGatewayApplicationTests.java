@@ -5,8 +5,8 @@ package com.estafet.microservices.gateway;
 //@SpringBootTest
 public class ApiGatewayApplicationTests {
 
-//	@Test
-	public void contextLoads() {
-	}
+//    @Test
+    public void contextLoads() {
+    }
 
 }

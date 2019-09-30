@@ -4,7 +4,7 @@ import com.estafet.microservices.gateway.model.ServiceHealth;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 
 public interface DiscoveryStewardService {
-	ServiceHealth checkServiceHealth(String serviceName);
+    ServiceHealth checkServiceHealth(String serviceName);
 
-	String getServiceUrl(String serviceName) throws HystrixBadRequestException;
+    String getServiceUrl(String serviceName) throws HystrixBadRequestException;
 }
