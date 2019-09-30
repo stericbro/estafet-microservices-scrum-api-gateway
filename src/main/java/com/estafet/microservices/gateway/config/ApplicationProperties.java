@@ -17,7 +17,7 @@ public class ApplicationProperties {
 	public void setServices(HashMap<String, String> services) {
 		this.services = services;
 	}
-	
+
 	public String findServiceUriByName(String serviceName) {
 		return getServices().get(serviceName);
 	}

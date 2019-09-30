@@ -9,17 +9,17 @@ public class ServiceHealth {
 	private String serviceName;
 	private String description;
 	private String status;
-	
+
 	public ServiceHealth() {
 
 	}
-	
+
 	public ServiceHealth(String serviceName, String description, String status) {
 		this.serviceName = serviceName;
 		this.description = description;
 		this.status = status;
 	}
-	
+
 	public String getServiceName() {
 		return serviceName;
 	}

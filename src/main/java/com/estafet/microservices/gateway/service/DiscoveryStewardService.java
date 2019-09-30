@@ -5,6 +5,6 @@ import com.netflix.hystrix.exception.HystrixBadRequestException;
 
 public interface DiscoveryStewardService {
 	ServiceHealth checkServiceHealth(String serviceName);
-	
+
 	String getServiceUrl(String serviceName) throws HystrixBadRequestException;
 }

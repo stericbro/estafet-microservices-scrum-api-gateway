@@ -34,7 +34,7 @@ public class DiscoveryStewardServiceImpl implements DiscoveryStewardService {
 		List<ServiceInstance> services = discoveryClient.getInstances(serviceName);
 
 		if (!services.isEmpty()) {
-			try {				
+			try {
 				ServiceHealth serviceHealth = restTemplate.getForObject(applicationProperties.getServices().get(serviceName) + "/health", ServiceHealth.class);
 				serviceHealth.setServiceName(serviceName);
 

@@ -16,7 +16,7 @@ public class Story {
 
 	@JsonIgnore
 	private RestTemplate restTemplate;
-	
+
 	private Integer id;
 
 	private Integer projectId;
@@ -42,7 +42,7 @@ public class Story {
 		this.storypoints = points[ThreadLocalRandom.current().nextInt(0, 9)];
 		return this;
 	}
-	
+
 	public Project getProject() {
 		return project;
 	}

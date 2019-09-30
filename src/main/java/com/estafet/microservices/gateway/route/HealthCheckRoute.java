@@ -24,22 +24,22 @@ public class HealthCheckRoute extends RouteBuilder {
 
 	@Value("${camel.hystrix.execution-timeout-in-milliseconds}")
 	private int hystrixExecutionTimeout;
-	
+
 	@Value("${camel.hystrix.group-key}")
 	private String hystrixGroupKey;
-	
+
 	@Value("${camel.hystrix.execution-timeout-enabled}")
 	private boolean hystrixCircuitBreakerEnabled;
-	
+
 	@Autowired
 	private DiscoveryStewardService discoveryStewardService;
-	
+
 	@Override
 	public void configure() throws Exception {
 		LOGGER.info("- Initialize and configure /service route");
 
 		try {
-			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));	
+			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));
 		} catch (Exception e) {
 			LOGGER.error("Failed to parse the ENABLE_TRACER value: {}", env.getProperty("ENABLE_TRACER"));
 		}
@@ -47,8 +47,8 @@ public class HealthCheckRoute extends RouteBuilder {
 		restConfiguration().component("servlet")
 		.apiContextPath("/api-docs")
 		.bindingMode(RestBindingMode.auto);
-		
-		rest("/health-api")			
+
+		rest("/health-api")
 			.get("/{serviceName}")
 			.param()
 				.name("serviceName")
@@ -65,7 +65,7 @@ public class HealthCheckRoute extends RouteBuilder {
 			.end()
 			.process((exchange) -> {
 				ServiceHealth serviceHealth = discoveryStewardService.checkServiceHealth(exchange.getIn().getHeader("serviceName").toString());
-				
+
 				exchange.getIn().setBody(serviceHealth.toJSON().getBytes());
 			})
 			.onFallback()
@@ -75,8 +75,8 @@ public class HealthCheckRoute extends RouteBuilder {
 			.setHeader("CamelJacksonUnmarshalType", simple(ServiceHealth.class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, ServiceHealth.class)
 		.endRest();
-		
-	
+
+
 	    from("direct:defaultHealthCheckFallback").routeId("defaultHealthCheckFallback")
 	    .process((exchange)->{
 			Exception cause = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);

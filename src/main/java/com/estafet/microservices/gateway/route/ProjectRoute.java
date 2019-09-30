@@ -28,13 +28,13 @@ public class ProjectRoute extends RouteBuilder {
 
 	@Value("${camel.hystrix.execution-timeout-in-milliseconds}")
 	private int hystrixExecutionTimeout;
-	
+
 	@Value("${camel.hystrix.group-key}")
 	private String hystrixGroupKey;
-	
+
 	@Value("${camel.hystrix.execution-timeout-enabled}")
 	private boolean hystrixCircuitBreakerEnabled;
-	
+
 	@Autowired
 	private DiscoveryStewardService discoveryStewardService;
 
@@ -43,7 +43,7 @@ public class ProjectRoute extends RouteBuilder {
 		LOGGER.info("- Initialize and configure /project route");
 
 		try {
-			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));	
+			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));
 		} catch (Exception e) {
 			LOGGER.error("Failed to parse the ENABLE_TRACER value: {}", env.getProperty("ENABLE_TRACER"));
 		}
@@ -51,10 +51,10 @@ public class ProjectRoute extends RouteBuilder {
 		restConfiguration().component("servlet")
 		.apiContextPath("/api-docs")
 		.bindingMode(RestBindingMode.auto);
-		
+
 		rest("/project-api")
 			.produces(MediaType.APPLICATION_JSON_VALUE)
-		
+
 		//Create new project
 		.post("/project")
 			.type(Project.class)
@@ -83,7 +83,7 @@ public class ProjectRoute extends RouteBuilder {
 			.setHeader("CamelJacksonUnmarshalType", simple(Project.class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, Project.class)
 		.endRest()
-		
+
 		//Get All Projects
 		.get("/project")
 		.route()
@@ -108,7 +108,7 @@ public class ProjectRoute extends RouteBuilder {
 		.setHeader("CamelJacksonUnmarshalType", simple(Project[].class.getName())).unmarshal()
 		.json(JsonLibrary.Jackson, Project[].class)
 		.endRest()
-		
+
 		.get("/project/{id}")
 			.param()
 				.name("id")
@@ -136,7 +136,7 @@ public class ProjectRoute extends RouteBuilder {
 			.json(JsonLibrary.Jackson, Project.class)
 		.endRest();
 
-		
+
 		 // Default fallback returns empty list of projects
 	    from("direct:defaultListOfProjectsFallback").routeId("defaultListOfProjectsFallback")
 	    .process((exchange)->{

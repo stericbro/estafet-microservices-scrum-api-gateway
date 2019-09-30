@@ -26,25 +26,25 @@ public class StoryRoute extends RouteBuilder {
 
 	@Value("${camel.hystrix.execution-timeout-in-milliseconds}")
 	private int hystrixExecutionTimeout;
-	
+
 	@Value("${camel.hystrix.group-key}")
 	private String hystrixGroupKey;
-	
+
 	@Value("${camel.hystrix.execution-timeout-enabled}")
 	private boolean hystrixCircuitBreakerEnabled;
-	
+
 	@Autowired
 	private DiscoveryStewardService discoveryStewardService;
-	
+
 	@Autowired
 	private Environment env;
-	
+
 	@Override
 	public void configure() throws Exception {
 		LOGGER.info("- Initialize and configure /story route");
-		
+
 		try {
-			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));	
+			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));
 		} catch (Exception e) {
 			LOGGER.error("Failed to parse the ENABLE_TRACER value: {}", env.getProperty("ENABLE_TRACER"));
 		}
@@ -52,10 +52,10 @@ public class StoryRoute extends RouteBuilder {
 		restConfiguration().component("servlet")
 		.apiContextPath("/api-docs")
 		.bindingMode(RestBindingMode.auto);
-		
+
 		rest("/story-api")
 			.produces(MediaType.ALL_VALUE)
-		
+
 		//Create new sprint
 		.post("/project/{id}/story")
 			.param()
@@ -88,7 +88,7 @@ public class StoryRoute extends RouteBuilder {
 			.setHeader("CamelJacksonUnmarshalType", simple(Story.class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, Story.class)
 		.endRest()
-			
+
 		//Get story by id
 		.get("/story/{id}")
 			.param()
@@ -118,7 +118,7 @@ public class StoryRoute extends RouteBuilder {
 			.setHeader("CamelJacksonUnmarshalType", simple(Story.class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, Story.class)
 		.endRest()
-		
+
 		//Get project stories by project id
 		.get("/project/{id}/stories")
 			.param()
@@ -148,8 +148,8 @@ public class StoryRoute extends RouteBuilder {
 			.setHeader("CamelJacksonUnmarshalType", simple(Story[].class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, Story[].class)
 		.endRest();
-		
-		
+
+
 		// Default fallback returns empty list of stories
 	    from("direct:defaultListOfStoriesFallback").routeId("defaultListOfStoriesFallback")
 	    .process((exchange) -> {
@@ -168,6 +168,6 @@ public class StoryRoute extends RouteBuilder {
 	    		exchange.getIn().setBody(new Story());
 			}
 	    }) .marshal().json(JsonLibrary.Jackson);
-	
+
 	}
 }

@@ -111,7 +111,7 @@
 				<artifactId>opentracing-spring-web-autoconfigure</artifactId>
 				<version>0.0.10</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.opentracing.brave</groupId>
 				<artifactId>brave-opentracing</artifactId>

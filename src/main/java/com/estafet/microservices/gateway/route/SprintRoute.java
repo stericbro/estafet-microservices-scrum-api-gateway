@@ -25,36 +25,36 @@ public class SprintRoute extends RouteBuilder {
 
 	@Value("${camel.hystrix.execution-timeout-in-milliseconds}")
 	private int hystrixExecutionTimeout;
-	
+
 	@Value("${camel.hystrix.group-key}")
 	private String hystrixGroupKey;
-	
+
 	@Value("${camel.hystrix.execution-timeout-enabled}")
 	private boolean hystrixCircuitBreakerEnabled;
 
 	@Autowired
 	private DiscoveryStewardService discoveryStewardService;
-		
+
 	@Autowired
 	private Environment env;
-	
+
 	@Override
 	public void configure() throws Exception {
 		LOGGER.info("- Initialize and configure /sprint route");
-		
+
 		try {
-			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));	
+			getContext().setTracing(Boolean.parseBoolean(env.getProperty("ENABLE_TRACER", "false")));
 		} catch (Exception e) {
 			LOGGER.error("Failed to parse the ENABLE_TRACER value: {}", env.getProperty("ENABLE_TRACER"));
 		}
-		
+
 		restConfiguration().component("servlet")
 		.apiContextPath("/api-docs")
 		.bindingMode(RestBindingMode.auto);
-		
+
 		rest("/sprint-api")
 			.produces(MediaType.ALL_VALUE)
-		
+
 		//Get sprint by sprint id
 		.get("/sprint/{id}")
 			.param()
@@ -82,8 +82,8 @@ public class SprintRoute extends RouteBuilder {
 		.end()
 			.setHeader("CamelJacksonUnmarshalType", simple(Sprint.class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, Sprint.class)
-		.endRest()		
-		
+		.endRest()
+
 		//Get all project sprints by project id
 		.get("/project/{id}/sprints")
 			.param()
@@ -112,7 +112,7 @@ public class SprintRoute extends RouteBuilder {
 			.setHeader("CamelJacksonUnmarshalType", simple(Sprint[].class.getName())).unmarshal()
 			.json(JsonLibrary.Jackson, Sprint[].class)
 		.endRest();
-	
+
 		 // Default fallback returns empty list of projects
 	    from("direct:defaultListOfSprintsFallback").routeId("defaultListOfSprintsFallback")
 	    .process((exchange) -> {
@@ -128,6 +128,6 @@ public class SprintRoute extends RouteBuilder {
 			LOGGER.error("Hystrix Default fallback. Empty sprints returned", cause);
 			exchange.getIn().setBody(new Sprint());
 	    }) .marshal().json(JsonLibrary.Jackson);
-	
+
 	}
 }

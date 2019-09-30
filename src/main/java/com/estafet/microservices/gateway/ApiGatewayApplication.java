@@ -39,7 +39,7 @@ public class ApiGatewayApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) {
 		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
-	
+
 	@Bean
 	public io.opentracing.Tracer jaegerTracer() {
 		return new com.uber.jaeger.Configuration("gateway",
@@ -47,7 +47,7 @@ public class ApiGatewayApplication extends SpringBootServletInitializer {
 				com.uber.jaeger.Configuration.ReporterConfiguration.fromEnv())
 				.getTracer();
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder.build();
@@ -58,18 +58,18 @@ public class ApiGatewayApplication extends SpringBootServletInitializer {
 		ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet());
 
 		registration.setName(CAMEL_SERVLET_NAME);
-		
+
 		return registration;
 	}
 
 	@Bean
 	public ServletRegistrationBean metricsServlet() {
 		ServletRegistrationBean registration = new ServletRegistrationBean(new HystrixMetricsStreamServlet(), HYSTRIX_URL_MAPPING);
-		
+
 		return registration;
 	}
-	
-	
+
+
 	private class CORSServlet extends CamelHttpTransportServlet {
 		private static final long serialVersionUID = 1L;
 
